@@ -1,0 +1,63 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+body{
+    font-size: 16px;
+    line-height: 1.7;
+    box-sizing: border-box;
+    font-weight: 400;
+}
+header{
+    height: 50px; 
+    /* background-color: rgb(212, 187, 41); */
+}
+h2{
+    margin: 0;
+    color: #555; 
+}
+.page-home{
+    display: flex;
+    gap: 50px;
+}
+.menu-container{
+    background-color: lightgray;
+    width: 200px;
+}
+.menu{
+    height: 40px;
+    border-bottom: solid 1px white;
+}
+h3{
+    color: #555;
+}
+.task-container{
+    display: flex;
+    gap: 15px;
+    height: 30px;
+}
+.section-tasks li{
+    list-style: none;
+}
+.section-tasks li a{
+    text-decoration: none;
+}
+.context-tag{
+    background-color: lightgreen;
+    padding: 0 10px;
+}
+.priority-tag{
+    background-color: lightblue;
+    padding: 0 10px;
+}
+.due-tag{
+    background-color: cyan;
+    padding: 0 10px;
+}
+.task-text{
+    font-size: 20px;
+}
+.checkbox-container{
+    align-self: flex-end;
+}
