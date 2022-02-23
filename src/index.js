@@ -27,29 +27,5 @@ const task1 = Task('Do pushups and pull ups',
 console.log(task1.isCompleted);
 
 //
-function getTaskItem(task){
-    return task.taskItem;
-}
-function getTaskDetail(task){
-    return task.taskDetail;
-}
-function getContext(task){
-    return task.context;
-}
-function getPriority(task){
-    return task.priority;
-}
-function getDueDate(task){
-    return task.dueDate;
-}
-function getProjectName(task){
-    return task.projectName
-}
 
-createTaskCard();
-
-// taskItem.textContent = getTaskItem(task1);
-// context.textContent = getContext(task1);
-// priority.textContent = getPriority(task1);
-// dueDate.textContent = getDueDate(task1);
-
+createTaskCard(task1);

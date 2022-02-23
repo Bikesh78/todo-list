@@ -1,5 +1,7 @@
-export default function createTaskCard(){
-    let sectionTask = document.querySelector('.section-tasks');
+import getItem from "./getItems";
+
+export default function createTaskCard(task){
+let sectionTask = document.querySelector('.section-tasks');
 
 let checkbox = document.createElement('input');
 let taskItem = document.createElement('p');
@@ -46,5 +48,13 @@ taskContainer.appendChild(deleteContainer);
 checkbox.type = 'checkbox';
 edit.textContent = 'Edit';
 deleteTask.textContent = 'X';
+
+getItem(task);
+console.log(getItem(task));
+taskItem.textContent = getItem(task).getTaskItem;
+context.textContent = getItem(task).getContext;
+priority.textContent = getItem(task).getPriority;
+dueDate.textContent = getItem(task).getDueDate;
+
 sectionTask.appendChild(taskContainer.cloneNode(true));
 }
