@@ -74,9 +74,34 @@
                 <button class="fixed-button">+</button>
             </div>
         </section>
-        <div class="form-container">
-            
-        </div>
+        <form action="">
+            <div class="form--task">
+                <label for="task-field">Task:</label>
+                <input type="text" placeholder="Type task here" id="task-field" name="task" required>
+            </div>
+            <div class="form--project">
+                <label for="project-field">Project Name:</label>
+                <input type="text" name="project" id="project-field" placeholder="Enter name of project">
+            </div>
+            <div class="form-context">
+                <label for="context-field">Context:</label>
+                <input type="text" placeholder="Enter Context. example: exercise" id="context-field" name="context">
+            </div>
+            <div class="form--priority">
+                <label for="priority-field">Priority: </label>
+                <select name="priority" id="priority-field">
+                    <option value="none">-</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+            <div class="form--due-date">
+                <label for="due-date-field">Due Date</label>
+                <input type="date" id="due-date-field" name="due-date">
+            </div>
+        </form>
     </main>
     <script src="bundle.js"></script>
 </body>
