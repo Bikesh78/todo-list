@@ -29,3 +29,18 @@ console.log(task1.isCompleted);
 //
 
 createTaskCard(task1);
+
+const taskArray = [];
+
+// TODO : create a function that receives value from form
+
+
+
+//display form button when clicked
+let fixedButton = document.querySelector('.fixed-button');
+let form = document.querySelector('form');
+let body = document.querySelector('body');
+fixedButton.addEventListener('click',(e) => {
+    form.style.display = "flex";
+})
+

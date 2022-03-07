@@ -78,4 +78,58 @@ h3{
 }
 .fixed-button:hover{
     transform: scale(1.2);
+    cursor: pointer;
+}
+
+form{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    background-color: #e3e3e3;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 10;
+    display: none;
+}
+form > div {
+    display: flex;
+    gap: 25px;
+}
+label {
+    font-size: 22px;
+}
+input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding-left: 5px;
+    font-size: 22px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+select{
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 22px;
+}
+.btn-main{
+    background-color: black;
+    color: white;
+    font-size: 14px;
+    line-height: 1.214;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 16.5px 41px 16.5px 41px; 
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    border: none;
+}
+.btn-main:hover{
+    background-color: #710104;
+    cursor: pointer;
 }
