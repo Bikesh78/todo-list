@@ -50,7 +50,7 @@ edit.textContent = 'Edit';
 deleteTask.textContent = 'X';
 
 getItem(task);
-console.log(getItem(task));
+
 taskItem.textContent = getItem(task).getTaskItem;
 context.textContent = getItem(task).getContext;
 priority.textContent = getItem(task).getPriority;
