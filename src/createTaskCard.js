@@ -51,6 +51,7 @@ deleteTask.textContent = 'X';
 
 getItem(task);
 
+
 taskItem.textContent = getItem(task).getTaskItem;
 context.textContent = getItem(task).getContext;
 priority.textContent = getItem(task).getPriority;

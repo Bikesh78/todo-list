@@ -36,6 +36,7 @@ h3{
     display: flex;
     gap: 15px;
     height: 30px;
+    margin-bottom: 15px;
 }
 .section-tasks li{
     list-style: none;
@@ -54,6 +55,10 @@ h3{
 .due-tag{
     background-color: cyan;
     padding: 0 10px;
+}
+.delete-container{
+    color: red;
+    cursor: pointer;
 }
 .task-text{
     font-size: 20px;

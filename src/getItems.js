@@ -1,5 +1,6 @@
 export default function getItem(task){
 
+    let getTaskID = task.taskID;
     let getTaskItem = task.taskItem;
     let getTaskDetail = task.taskDetail;
     let getContext = task.context;
@@ -25,5 +26,5 @@ export default function getItem(task){
     function getProjectName(task){
         return task.projectName
     } */
-    return {getTaskItem,getTaskDetail,getContext,getDueDate,getPriority,getProjectName};
+    return {getTaskID,getTaskItem,getTaskDetail,getContext,getDueDate,getPriority,getProjectName};
 }

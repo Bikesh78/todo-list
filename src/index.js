@@ -10,13 +10,17 @@ const getTaskDetail = (data) =>{
     let taskDetail = data.taskDetail;
     return {taskDetail};
 } */
+
+let counter = 0;
+
 const Task = (taskItem, taskDetail, context, priority, dueDate, projectName) => {
 /*     const data ={taskItem, taskDetail, context, priority, dueDate, projectName};
     return Object.assign({},getTaskItem(data),getTaskDetail(data)); */
    let isCompleted = false;
-    
-    return Object.assign({},{taskItem, taskDetail, context, priority, dueDate, projectName,isCompleted});
+   let taskID = ++counter;
+    return Object.assign({},{taskID,taskItem, taskDetail, context, priority, dueDate, projectName,isCompleted});
 }
+
 
 const task1 = Task('Do pushups and pull ups',
                     'Exercise rigorously for at least 20 minutes',
@@ -26,48 +30,31 @@ const task1 = Task('Do pushups and pull ups',
                     'Loose 5kg of weight',
                     );
 // task1.isCompleted = true;
+
+let taskArray = [];
+taskArray.push(Task('Do pushups and pull ups',
+                    'Exercise rigorously for at least 20 minutes',
+                    'Exercise',
+                    'A',
+                    '',
+                    'Loose 5kg of weight',
+                    )) ;
+
 console.log(task1.isCompleted);
+console.log(task1); 
 
+taskArray.push(Task('Do pushups',
+                    'Exercise rigorously for at least 20 minutes',
+                    'Exercise',
+                    'A',
+                    '',
+                    'Loose 5kg of weight',
+                    )) ;
 //
+console.log(taskArray);
+createTaskCard(taskArray[0]);
+createTaskCard(taskArray[1]);
 
-createTaskCard(task1);
-
-const taskArray = [];
-
-// let ddd =getFormValue();
-
-
-// // TODO : create a function that receives value from form
-// let taskField = document.querySelector('#task-field');
-// let projectField = document.querySelector('#project-field');
-// let contextField = document.querySelector('#context-field');
-// let priorityField = document.querySelector('#priority-field');
-// let dueDateField = document.querySelector('#due-date-field');
-// let submitButton = document.querySelector('.submit');
-
-// function clearField(){
-//     taskField.value = '';
-//     projectField.value = '';
-//     contextField.value = '';
-//     priorityField.value = '';
-//     dueDateField.value = '';
-// }
-
-// let formValue=[];
-
-// submitButton.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     let taskName = taskField.value;
-//     let projectName = projectField.value;
-//     let contextName = contextField.value;
-//     let priorityLevel = priorityField.value;
-//     let dueDate = dueDateField.value;
-
-//     clearField();
-//     removeShowClass();
-//     taskArray.push(Task.apply(null,[taskName, projectName, contextName, priorityLevel, dueDate]));
-//     // formValue = [taskName, projectName, contextName, priorityLevel, dueDate];
-// })
 let submitButton = document.querySelector('.submit');
 
 // calls getFormValue() and passes the input value of form into taskArray
@@ -77,13 +64,16 @@ submitButton.addEventListener('click', (e) => {
     //adds task object into taskArray
     taskArray.push(Task.apply(null,getFormValue()));
     console.log(taskArray);
+
+    //shows added value on screen
+    createTaskCard(taskArray[taskArray.length - 1]);
     
 })
 
 //display form button when clicked
 
 let fixedButton = document.querySelector('.fixed-button');
-let form = document.querySelector('form');
+let form = document.querySelector('form'); 
 let overlay = document.querySelector('.overlay');
 
 fixedButton.addEventListener('click',(e) => {
@@ -97,3 +87,5 @@ fixedButton.addEventListener('click',(e) => {
 overlay.addEventListener('click', () => {
     removeShowClass();
 })
+
+//TODO: create a function that deletes the task item. Launch that item when submit button is clicked
