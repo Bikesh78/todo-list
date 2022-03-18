@@ -41,7 +41,6 @@ const Task = (
     }
   );
 };
-
 const task1 = Task(
   "Do pushups and pull ups",
   "Exercise rigorously for at least 20 minutes",
@@ -65,15 +64,15 @@ taskArray.push(
 );
 
 taskArray.push(
-    Task(
-      "Do pushups",
-      "Exercise rigorously for at least 20 minutes",
-      "Exercise",
-      "A",
-      "",
-      "Loose 5kg of weight"
-    )
-  );
+  Task(
+    "Do pushups",
+    "Exercise rigorously for at least 20 minutes",
+    "Exercise",
+    "A",
+    "",
+    "Loose 5kg of weight"
+  )
+);
 
 /* console.log(task1.isCompleted);
 console.log(task1);
@@ -115,13 +114,12 @@ overlay.addEventListener("click", () => {
 
 //TODO: create a function that deletes the task item. Launch that item when submit button is clicked
  */
-console.log(...taskArray)
-let sectionTask = document.querySelector('.section-tasks');
-
+console.log(...taskArray);
+let sectionTask = document.querySelector(".section-tasks");
 
 function renderTask() {
   clearElement(sectionTask);
- 
+
   taskArray.forEach((task) => {
     let checkbox = document.createElement("input");
     let taskItem = document.createElement("p");
@@ -169,9 +167,12 @@ function renderTask() {
     edit.textContent = "Edit";
     deleteTask.textContent = "X";
 
-    getItem(task);
+    task.isCompleted ? checkbox.checked = true : checkbox.checked = false;
 
-    taskContainer.setAttribute('data-user-id',getItem(task).getTaskID);
+    console.log(task.isCompleted);
+    getItem(task);
+  
+    taskContainer.setAttribute("data-user-id", getItem(task).getTaskID);
     taskItem.textContent = getItem(task).getTaskItem;
     context.textContent = getItem(task).getContext;
     priority.textContent = getItem(task).getPriority;
@@ -181,40 +182,68 @@ function renderTask() {
   });
 }
 
-function clearElement(element){
-    while (element.firstChild) {
-        element.removeChild(element.firstChild);
-    }
+function clearElement(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
 }
 renderTask();
 
-
 //delete tasks
-sectionTask.addEventListener('click', (e) => {
-    let deleteTarget = e.target.parentNode;
-    if(deleteTarget.classList.contains('delete-container')){
-        let deleteId = parseInt(deleteTarget.parentNode.dataset.userId);
-        
-        taskArray = taskArray.filter(task => task.taskID != deleteId);
-        renderTask();
-    }
-})
+sectionTask.addEventListener("click", (e) => {
+  let deleteTarget = e.target.parentNode;
+  if (deleteTarget.classList.contains("delete-container")) {
+    let deleteId = parseInt(deleteTarget.parentNode.dataset.userId);
 
+    taskArray = taskArray.filter((task) => task.taskID != deleteId);
+    renderTask();
+  }
+
+  // is completed function
+  if (e.target.type == 'checkbox'){
+    console.log(e.target.checked);
+    // taskArray.forEach(task=> {
+    //   if (e.target.checked){
+    //     task.isCompleted = true
+    //   } else{
+    //     task.isCompleted = false
+    //   }
+    // })
+    let arrayId = getTaskId(e.target);
+    console.log(arrayId);
+    taskArray.forEach(task => {
+      if (task.taskID == arrayId) {
+        console.log('it matches');
+        if (e.target.checked == true) {
+          task.isCompleted = true
+        } else {
+          task.isCompleted = false;
+        }
+      }
+    })
+    renderTask()
+    console.log(taskArray);
+  }
+});
+
+function getTaskId(target){
+  return parseInt(target.parentNode.parentNode.dataset.userId);
+}
 
 
 let taskForm = document.querySelector("form");
 taskForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-  
-    //adds task object into taskArray
-    taskArray.push(Task(...getFormValue()));
-    console.log(taskArray);
-  
-    //shows added value on screen
-    renderTask();
-  });
+  e.preventDefault();
 
-  //display form button when clicked
+  //adds task object into taskArray
+  taskArray.push(Task(...getFormValue()));
+  console.log(taskArray);
+
+  //shows added value on screen
+  renderTask();
+});
+
+//display form button when clicked
 
 let fixedButton = document.querySelector(".fixed-button");
 let form = document.querySelector("form");

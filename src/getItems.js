@@ -7,6 +7,7 @@ export default function getItem(task){
     let getPriority = task.priority;
     let getDueDate = task.dueDate;
     let getProjectName = task.projectName;
+    let getIsCompleted = task.isCompleted;
 
   /*   function getTaskItem(task){
         return task.taskItem;
