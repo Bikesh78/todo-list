@@ -1,5 +1,6 @@
 import getItem from "./getItems";
 
+
 let sectionTask = document.querySelector('.section-tasks');
 export default function createTaskCard(task){
 // let sectionTask = document.querySelector('.section-tasks');

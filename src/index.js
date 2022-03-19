@@ -2,6 +2,7 @@ import "./style.css";
 import createTaskCard from "./createTaskCard";
 import getFormValue from "./getFormValue";
 import removeShowClass from "./removeShowClass";
+import clearField from "./clearField";
 
 import getItem from "./getItems";
 /* const getTaskItem = (data) => {
@@ -167,10 +168,11 @@ function renderTask() {
     edit.textContent = "Edit";
     deleteTask.textContent = "X";
 
+    // keeps checkbox ticked even when task is re-rendered
     task.isCompleted ? checkbox.checked = true : checkbox.checked = false;
 
-    console.log(task.isCompleted);
-    getItem(task);
+   
+    // getItem(task);
   
     taskContainer.setAttribute("data-user-id", getItem(task).getTaskID);
     taskItem.textContent = getItem(task).getTaskItem;
@@ -189,11 +191,12 @@ function clearElement(element) {
 }
 renderTask();
 
-//delete tasks
 sectionTask.addEventListener("click", (e) => {
-  let deleteTarget = e.target.parentNode;
-  if (deleteTarget.classList.contains("delete-container")) {
-    let deleteId = parseInt(deleteTarget.parentNode.dataset.userId);
+  //delete tasks
+  let selectedTarget = e.target.parentNode;
+  
+  if (selectedTarget.classList.contains("delete-container")) {
+    let deleteId = parseInt(selectedTarget.parentNode.dataset.userId);
 
     taskArray = taskArray.filter((task) => task.taskID != deleteId);
     renderTask();
@@ -201,19 +204,10 @@ sectionTask.addEventListener("click", (e) => {
 
   // is completed function
   if (e.target.type == 'checkbox'){
-    console.log(e.target.checked);
-    // taskArray.forEach(task=> {
-    //   if (e.target.checked){
-    //     task.isCompleted = true
-    //   } else{
-    //     task.isCompleted = false
-    //   }
-    // })
     let arrayId = getTaskId(e.target);
-    console.log(arrayId);
+    console.log('is completed',arrayId);
     taskArray.forEach(task => {
       if (task.taskID == arrayId) {
-        console.log('it matches');
         if (e.target.checked == true) {
           task.isCompleted = true
         } else {
@@ -222,23 +216,63 @@ sectionTask.addEventListener("click", (e) => {
       }
     })
     renderTask()
-    console.log(taskArray);
   }
-});
+  
+  //Edit task
+  if(selectedTarget.classList.contains('edit-option')){
+    console.log('edit selected');
+    let arrayId = getTaskId(e.target);
+    taskArray.forEach(task=>{
+      if(task.taskID == arrayId){
+        showTaskValue(task);
+      }
+    })
+    
+    
+    showForm();
 
+  }
+
+});
+function showTaskValue(task){
+  let formContainer = document.querySelector('#form-conatiner');
+  let taskField = document.querySelector('#task-field');
+  let projectField = document.querySelector('#project-field');
+  let contextField = document.querySelector('#context-field');
+  let priorityField = document.querySelector('#priority-field');
+  let dueDateField = document.querySelector('#due-date-field');
+ 
+  formContainer.classList.add('edit-form');
+
+  taskField.value = task.taskItem || null;
+  projectField.value = task.projectName || null;
+  contextField.value = task.context || null;
+  priorityField.value = task.priority || null;
+  dueDateField.value = task.dueDate || null;
+}
+//gets parent's parent node of event target
 function getTaskId(target){
   return parseInt(target.parentNode.parentNode.dataset.userId);
 }
 
-
+// Form Submit
 let taskForm = document.querySelector("form");
 taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   //adds task object into taskArray
-  taskArray.push(Task(...getFormValue()));
+  let formContainer = document.querySelector('#form-conatiner');
+  if (getFormValue() != undefined){
+    taskArray.push(Task(...getFormValue()));
+    console.log('tassk array pushed')
+  } else{
+    // edit task function
+  }
+  removeShowClass();
+  console.log(getFormValue());
   console.log(taskArray);
-
+  
+  formContainer.classList.remove('edit-form');
   //shows added value on screen
   renderTask();
 });
@@ -250,10 +284,13 @@ let form = document.querySelector("form");
 let overlay = document.querySelector(".overlay");
 
 fixedButton.addEventListener("click", (e) => {
-  form.classList.add("show");
-  overlay.classList.add("show");
+  showForm();
 });
 
+function showForm(){
+  form.classList.add("show");
+  overlay.classList.add("show");
+}
 overlay.addEventListener("click", () => {
   removeShowClass();
 });
