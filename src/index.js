@@ -27,7 +27,7 @@ const Task = (
   /*     const data ={taskItem, taskDetail, context, priority, dueDate, projectName};
     return Object.assign({},getTaskItem(data),getTaskDetail(data)); */
   let isCompleted = false;
-  let taskID = ++counter;
+  let taskID = counter++;
   return Object.assign(
     {},
     {
@@ -192,6 +192,7 @@ function clearElement(element) {
 renderTask();
 
 sectionTask.addEventListener("click", (e) => {
+  e.stopPropagation();
   //delete tasks
   let selectedTarget = e.target.parentNode;
   
@@ -225,12 +226,12 @@ sectionTask.addEventListener("click", (e) => {
     taskArray.forEach(task=>{
       if(task.taskID == arrayId){
         showTaskValue(task);
+        showForm();
+        updateTask(task);
       }
     })
-    
-    
-    showForm();
-
+    console.log(taskArray);
+    renderTask();
   }
 
 });
@@ -256,26 +257,58 @@ function getTaskId(target){
 }
 
 // Form Submit
-let taskForm = document.querySelector("form");
-taskForm.addEventListener("submit", (e) => {
+let submitButton = document.querySelector('.btn-main.submit');
+submitButton.addEventListener("click", (e) => {
   e.preventDefault();
-
+  e.stopPropagation();
   //adds task object into taskArray
   let formContainer = document.querySelector('#form-conatiner');
   if (getFormValue() != undefined){
     taskArray.push(Task(...getFormValue()));
-    console.log('tassk array pushed')
-  } else{
-    // edit task function
-  }
+    console.log('tassk array pushed',taskArray)
+  } 
+
+  clearField();
   removeShowClass();
-  console.log(getFormValue());
-  console.log(taskArray);
   
   formContainer.classList.remove('edit-form');
   //shows added value on screen
   renderTask();
 });
+
+let updateButton = document.querySelector('.btn-main.update');
+
+function updateTask(task){
+  updateButton.addEventListener('click',(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let taskField = document.querySelector('#task-field');
+    let projectField = document.querySelector('#project-field');
+    let contextField = document.querySelector('#context-field');
+    let priorityField = document.querySelector('#priority-field');
+    let dueDateField = document.querySelector('#due-date-field');
+    
+    task.taskItem = taskField.value;
+    task.projectName = projectField.value;
+    task.context  = contextField.value;
+    task.priority = priorityField.value;
+    task.dueDate = dueDateField.value ;
+    
+    removeShowClass();
+    let index = taskArray.indexOf(task);
+    taskArray[index] = task;
+    console.log(index)
+    // taskArray.map(item => {
+    //   if(item.taskID != task.taskID){
+    //     console.log(task.taskID);
+    //     item = task;
+    //   }
+    // })
+    // console.log(taskArray);
+    renderTask();
+  })
+//  return task;
+}
 
 //display form button when clicked
 
@@ -284,6 +317,7 @@ let form = document.querySelector("form");
 let overlay = document.querySelector(".overlay");
 
 fixedButton.addEventListener("click", (e) => {
+  clearField();
   showForm();
 });
 

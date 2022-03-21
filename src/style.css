@@ -149,3 +149,12 @@ select{
     background-color: #710104;
     cursor: pointer;
 }
+.btn-main.update{
+    display: none;
+}
+.edit-form  .btn-main.update{
+    display: block;
+}
+.edit-form  .btn-main.submit{
+    display: none;
+}
