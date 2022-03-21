@@ -192,7 +192,6 @@ function clearElement(element) {
 renderTask();
 
 sectionTask.addEventListener("click", (e) => {
-  e.stopPropagation();
   //delete tasks
   let selectedTarget = e.target.parentNode;
   
@@ -221,17 +220,16 @@ sectionTask.addEventListener("click", (e) => {
   
   //Edit task
   if(selectedTarget.classList.contains('edit-option')){
-    console.log('edit selected');
     let arrayId = getTaskId(e.target);
     taskArray.forEach(task=>{
       if(task.taskID == arrayId){
         showTaskValue(task);
         showForm();
         updateTask(task);
+        console.log('edit is loaded');
       }
     })
-    console.log(taskArray);
-    renderTask();
+    // renderTask();
   }
 
 });
@@ -260,7 +258,6 @@ function getTaskId(target){
 let submitButton = document.querySelector('.btn-main.submit');
 submitButton.addEventListener("click", (e) => {
   e.preventDefault();
-  e.stopPropagation();
   //adds task object into taskArray
   let formContainer = document.querySelector('#form-conatiner');
   if (getFormValue() != undefined){
@@ -279,9 +276,10 @@ submitButton.addEventListener("click", (e) => {
 let updateButton = document.querySelector('.btn-main.update');
 
 function updateTask(task){
+  
   updateButton.addEventListener('click',(e) => {
     e.preventDefault();
-    e.stopPropagation();
+    console.log(task)
     let taskField = document.querySelector('#task-field');
     let projectField = document.querySelector('#project-field');
     let contextField = document.querySelector('#context-field');
@@ -295,9 +293,12 @@ function updateTask(task){
     task.dueDate = dueDateField.value ;
     
     removeShowClass();
+    // TODO : Debug edit function
+
     let index = taskArray.indexOf(task);
     taskArray[index] = task;
     console.log(index)
+
     // taskArray.map(item => {
     //   if(item.taskID != task.taskID){
     //     console.log(task.taskID);
@@ -305,9 +306,11 @@ function updateTask(task){
     //   }
     // })
     // console.log(taskArray);
+   
     renderTask();
-  })
-//  return task;
+  },{once : true});
+ 
+  // updateButton.removeEventListener('click',(e)=> {});
 }
 
 //display form button when clicked
