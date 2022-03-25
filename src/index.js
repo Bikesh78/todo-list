@@ -3,8 +3,10 @@ import createTaskCard from "./createTaskCard";
 import getFormValue from "./getFormValue";
 import removeShowClass from "./removeShowClass";
 import clearField from "./clearField";
-
 import getItem from "./getItems";
+
+import {format, formatRelative, compareAsc, isPast, isDate, parseISO} from 'date-fns'
+
 /* const getTaskItem = (data) => {
     let taskItem = data.taskItem;
     return {taskItem};
@@ -52,71 +54,47 @@ const task1 = Task(
 );
 // task1.isCompleted = true;
 
-let taskArray = [];
-taskArray.push(
-  Task(
-    "Do pushups and pull ups",
-    "Exercise rigorously for at least 20 minutes",
-    "Exercise",
-    "A",
-    "",
-    "Loose 5kg of weight"
-  )
-);
+let taskArray = JSON.parse(localStorage.getItem('task')) || [];
 
-taskArray.push(
-  Task(
-    "Do pushups",
-    "Exercise rigorously for at least 20 minutes",
-    "Exercise",
-    "A",
-    "",
-    "Loose 5kg of weight"
-  )
-);
+if (taskArray.length === 0){
+  taskArray.push(
+    Task(
+      "Do pushups and pull ups",
+      "Exercise rigorously for at least 20 minutes",
+      "Exercise",
+      "A",
+      "",
+      "Loose 5kg of weight"
+    )
+  );
+  
+  taskArray.push( 
+    Task(
+      "Do pushups",
+      "Exercise rigorously for at least 20 minutes",
+      "Exercise",
+      "A",
+      "",
+      "Loose 5kg of weight"
+    )
+  );
+}
 
-/* console.log(task1.isCompleted);
-console.log(task1);
 
 
-//
-
-createTaskCard(taskArray[0]);
-createTaskCard(taskArray[1]);
-
-let submitButton = document.querySelector(".submit");
-
-// calls getFormValue() and passes the input value of form into taskArray
-submitButton.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  //adds task object into taskArray
-  taskArray.push(Task.apply(null, getFormValue()));
-  console.log(taskArray);
-
-  //shows added value on screen
-  createTaskCard(taskArray[taskArray.length - 1]);
-});
-
-//display form button when clicked
-
-let fixedButton = document.querySelector(".fixed-button");
-let form = document.querySelector("form");
-let overlay = document.querySelector(".overlay");
-
-fixedButton.addEventListener("click", (e) => {
-  form.classList.add("show");
-  overlay.classList.add("show");
-});
-
-overlay.addEventListener("click", () => {
-  removeShowClass();
-});
-
-//TODO: create a function that deletes the task item. Launch that item when submit button is clicked
- */
 console.log(...taskArray);
 let sectionTask = document.querySelector(".section-tasks");
+
+
+function saveTask(){
+ localStorage.setItem("task",JSON.stringify( taskArray)) 
+ taskArray = JSON.parse(localStorage.getItem('task'));
+  console.log(taskArray);
+}
+function saveAndRender(){
+  saveTask();
+  renderTask();
+}
 
 function renderTask() {
   clearElement(sectionTask);
@@ -170,9 +148,6 @@ function renderTask() {
 
     // keeps checkbox ticked even when task is re-rendered
     task.isCompleted ? checkbox.checked = true : checkbox.checked = false;
-
-   
-    // getItem(task);
   
     taskContainer.setAttribute("data-user-id", getItem(task).getTaskID);
     taskItem.textContent = getItem(task).getTaskItem;
@@ -181,6 +156,7 @@ function renderTask() {
     dueDate.textContent = getItem(task).getDueDate;
 
     sectionTask.appendChild(taskContainer);
+    
   });
 }
 
@@ -189,7 +165,7 @@ function clearElement(element) {
     element.removeChild(element.firstChild);
   }
 }
-renderTask();
+saveAndRender();
 
 sectionTask.addEventListener("click", (e) => {
   //delete tasks
@@ -199,7 +175,7 @@ sectionTask.addEventListener("click", (e) => {
     let deleteId = parseInt(selectedTarget.parentNode.dataset.userId);
 
     taskArray = taskArray.filter((task) => task.taskID != deleteId);
-    renderTask();
+    saveAndRender();
   }
 
   // is completed function
@@ -215,7 +191,7 @@ sectionTask.addEventListener("click", (e) => {
         }
       }
     })
-    renderTask()
+    saveAndRender();
   }
   
   //Edit task
@@ -226,7 +202,6 @@ sectionTask.addEventListener("click", (e) => {
         showTaskValue(task);
         showForm();
         updateTask(task);
-        console.log('edit is loaded');
       }
     })
     // renderTask();
@@ -270,7 +245,7 @@ submitButton.addEventListener("click", (e) => {
   
   formContainer.classList.remove('edit-form');
   //shows added value on screen
-  renderTask();
+  saveAndRender();
 });
 
 let updateButton = document.querySelector('.btn-main.update');
@@ -279,7 +254,6 @@ function updateTask(task){
   
   updateButton.addEventListener('click',(e) => {
     e.preventDefault();
-    console.log(task)
     let taskField = document.querySelector('#task-field');
     let projectField = document.querySelector('#project-field');
     let contextField = document.querySelector('#context-field');
@@ -293,24 +267,17 @@ function updateTask(task){
     task.dueDate = dueDateField.value ;
     
     removeShowClass();
-    // TODO : Debug edit function
 
-    let index = taskArray.indexOf(task);
-    taskArray[index] = task;
-    console.log(index)
-
-    // taskArray.map(item => {
-    //   if(item.taskID != task.taskID){
-    //     console.log(task.taskID);
-    //     item = task;
-    //   }
-    // })
-    // console.log(taskArray);
+    taskArray.map(item => {
+      if(item.taskID != task.taskID){
+        item = task;
+      }
+    })
+    console.log(taskArray);
    
-    renderTask();
+    saveAndRender();
   },{once : true});
  
-  // updateButton.removeEventListener('click',(e)=> {});
 }
 
 //display form button when clicked
@@ -331,3 +298,4 @@ function showForm(){
 overlay.addEventListener("click", () => {
   removeShowClass();
 });
+
