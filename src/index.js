@@ -1,11 +1,20 @@
 import "./style.css";
+import {
+  format,
+  formatRelative,
+  compareAsc,
+  isPast,
+  isDate,
+  parseISO,
+  differenceInCalendarDays,
+} from "date-fns";
 import createTaskCard from "./createTaskCard";
 import getFormValue from "./getFormValue";
 import removeShowClass from "./removeShowClass";
 import clearField from "./clearField";
 import getItem from "./getItems";
-
-import {format, formatRelative, compareAsc, isPast, isDate, parseISO} from 'date-fns'
+import cs from "date-fns/esm/locale/cs/index.js";
+import { enIN, enUS } from "date-fns/locale";
 
 /* const getTaskItem = (data) => {
     let taskItem = data.taskItem;
@@ -28,35 +37,26 @@ const Task = (
 ) => {
   /*     const data ={taskItem, taskDetail, context, priority, dueDate, projectName};
     return Object.assign({},getTaskItem(data),getTaskDetail(data)); */
-  let isCompleted = false;
-  let taskID = counter++;
-  return Object.assign(
-    {},
-    {
-      taskID,
-      taskItem,
-      taskDetail,
-      context,
-      priority,
-      dueDate,
-      projectName,
-      isCompleted,
-    }
-  );
+  const isCompleted = false;
+  const taskID = counter++;
+  return {
+    taskID,
+    taskItem,
+    taskDetail,
+    context,
+    priority,
+    dueDate,
+    projectName,
+    isCompleted,
+  };
 };
-const task1 = Task(
-  "Do pushups and pull ups",
-  "Exercise rigorously for at least 20 minutes",
-  "Exercise",
-  "A",
-  "",
-  "Loose 5kg of weight"
-);
 // task1.isCompleted = true;
 
-let taskArray = JSON.parse(localStorage.getItem('task')) || [];
+// gets tasArray from local storage. Sets it to an empty array if there is no item in local storage
+let taskArray = JSON.parse(localStorage.getItem("task")) || [];
 
-if (taskArray.length === 0){
+//
+if (taskArray.length === 0) {
   taskArray.push(
     Task(
       "Do pushups and pull ups",
@@ -67,8 +67,8 @@ if (taskArray.length === 0){
       "Loose 5kg of weight"
     )
   );
-  
-  taskArray.push( 
+
+  taskArray.push(
     Task(
       "Do pushups",
       "Exercise rigorously for at least 20 minutes",
@@ -80,41 +80,39 @@ if (taskArray.length === 0){
   );
 }
 
-
-
 console.log(...taskArray);
-let sectionTask = document.querySelector(".section-tasks");
+const sectionTask = document.querySelector(".section-tasks");
 
-
-function saveTask(){
- localStorage.setItem("task",JSON.stringify( taskArray)) 
- taskArray = JSON.parse(localStorage.getItem('task'));
+function saveTask() {
+  localStorage.setItem("task", JSON.stringify(taskArray));
+  taskArray = JSON.parse(localStorage.getItem("task"));
   console.log(taskArray);
 }
-function saveAndRender(){
-  saveTask();
-  renderTask();
+function clearElement(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
 }
 
 function renderTask() {
   clearElement(sectionTask);
 
   taskArray.forEach((task) => {
-    let checkbox = document.createElement("input");
-    let taskItem = document.createElement("p");
-    let context = document.createElement("p");
-    let priority = document.createElement("p");
-    let dueDate = document.createElement("p");
-    let edit = document.createElement("p");
-    let deleteTask = document.createElement("p");
+    const checkbox = document.createElement("input");
+    const taskItem = document.createElement("p");
+    const context = document.createElement("p");
+    const priority = document.createElement("p");
+    const dueDate = document.createElement("p");
+    const edit = document.createElement("p");
+    const deleteTask = document.createElement("p");
 
-    let checkboxContainer = document.createElement("div");
-    let taskTest = document.createElement("div");
-    let contextTag = document.createElement("div");
-    let priorityTag = document.createElement("div");
-    let dueTag = document.createElement("div");
-    let editOption = document.createElement("div");
-    let deleteContainer = document.createElement("div");
+    const checkboxContainer = document.createElement("div");
+    const taskTest = document.createElement("div");
+    const contextTag = document.createElement("div");
+    const priorityTag = document.createElement("div");
+    const dueTag = document.createElement("div");
+    const editOption = document.createElement("div");
+    const deleteContainer = document.createElement("div");
 
     checkboxContainer.classList.add("checkbox-container");
     taskTest.classList.add("task-text");
@@ -132,7 +130,7 @@ function renderTask() {
     editOption.appendChild(edit);
     deleteContainer.appendChild(deleteTask);
 
-    let taskContainer = document.createElement("div");
+    const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
     taskContainer.appendChild(checkboxContainer);
     taskContainer.appendChild(taskTest);
@@ -147,76 +145,91 @@ function renderTask() {
     deleteTask.textContent = "X";
 
     // keeps checkbox ticked even when task is re-rendered
-    task.isCompleted ? checkbox.checked = true : checkbox.checked = false;
-  
+    task.isCompleted ? (checkbox.checked = true) : (checkbox.checked = false);
+
     taskContainer.setAttribute("data-user-id", getItem(task).getTaskID);
     taskItem.textContent = getItem(task).getTaskItem;
     context.textContent = getItem(task).getContext;
     priority.textContent = getItem(task).getPriority;
-    dueDate.textContent = getItem(task).getDueDate;
+    dueDate.textContent = getDueDate(getItem(task).getDueDate);
 
     sectionTask.appendChild(taskContainer);
-    
   });
 }
 
-function clearElement(element) {
-  while (element.firstChild) {
-    element.removeChild(element.firstChild);
-  }
+/// show date function
+function getDueDate(dueDate) {
+  const parsedDueDate = parseISO(dueDate);
+
+  //When diff is upto 7 days return this
+  console.log(formatRelative(parsedDueDate, Date.now()));
+  //When diff is more than 7 days return this
+  console.log(format(parsedDueDate, "do MMMM"));
+}
+/* import {
+  format,
+  formatRelative,
+  compareAsc,
+  isPast,
+  isDate,
+  parseISO,
+} from "date-fns"; */
+
+function saveAndRender() {
+  saveTask();
+  renderTask();
 }
 saveAndRender();
 
 sectionTask.addEventListener("click", (e) => {
-  //delete tasks
-  let selectedTarget = e.target.parentNode;
-  
+  // delete tasks
+  const selectedTarget = e.target.parentNode;
+
   if (selectedTarget.classList.contains("delete-container")) {
-    let deleteId = parseInt(selectedTarget.parentNode.dataset.userId);
+    const deleteId = parseInt(selectedTarget.parentNode.dataset.userId, 10);
 
     taskArray = taskArray.filter((task) => task.taskID != deleteId);
     saveAndRender();
   }
 
   // is completed function
-  if (e.target.type == 'checkbox'){
-    let arrayId = getTaskId(e.target);
-    console.log('is completed',arrayId);
-    taskArray.forEach(task => {
+  if (e.target.type === "checkbox") {
+    const arrayId = getTaskId(e.target);
+    console.log("is completed", arrayId);
+    taskArray.forEach((task) => {
       if (task.taskID == arrayId) {
         if (e.target.checked == true) {
-          task.isCompleted = true
+          task.isCompleted = true;
         } else {
           task.isCompleted = false;
         }
       }
-    })
+    });
     saveAndRender();
   }
-  
-  //Edit task
-  if(selectedTarget.classList.contains('edit-option')){
-    let arrayId = getTaskId(e.target);
-    taskArray.forEach(task=>{
-      if(task.taskID == arrayId){
+
+  // Edit task
+  if (selectedTarget.classList.contains("edit-option")) {
+    const arrayId = getTaskId(e.target);
+    taskArray.forEach((task) => {
+      if (task.taskID == arrayId) {
         showTaskValue(task);
         showForm();
         updateTask(task);
       }
-    })
+    });
     // renderTask();
   }
-
 });
-function showTaskValue(task){
-  let formContainer = document.querySelector('#form-conatiner');
-  let taskField = document.querySelector('#task-field');
-  let projectField = document.querySelector('#project-field');
-  let contextField = document.querySelector('#context-field');
-  let priorityField = document.querySelector('#priority-field');
-  let dueDateField = document.querySelector('#due-date-field');
- 
-  formContainer.classList.add('edit-form');
+function showTaskValue(task) {
+  const formContainer = document.querySelector("#form-conatiner");
+  const taskField = document.querySelector("#task-field");
+  const projectField = document.querySelector("#project-field");
+  const contextField = document.querySelector("#context-field");
+  const priorityField = document.querySelector("#priority-field");
+  const dueDateField = document.querySelector("#due-date-field");
+
+  formContainer.classList.add("edit-form");
 
   taskField.value = task.taskItem || null;
   projectField.value = task.projectName || null;
@@ -224,78 +237,80 @@ function showTaskValue(task){
   priorityField.value = task.priority || null;
   dueDateField.value = task.dueDate || null;
 }
-//gets parent's parent node of event target
-function getTaskId(target){
-  return parseInt(target.parentNode.parentNode.dataset.userId);
+// gets parent's parent node of event target
+function getTaskId(target) {
+  return parseInt(target.parentNode.parentNode.dataset.userId, 10);
 }
 
 // Form Submit
-let submitButton = document.querySelector('.btn-main.submit');
+const submitButton = document.querySelector(".btn-main.submit");
 submitButton.addEventListener("click", (e) => {
   e.preventDefault();
-  //adds task object into taskArray
-  let formContainer = document.querySelector('#form-conatiner');
-  if (getFormValue() != undefined){
+  // adds task object into taskArray
+  const formContainer = document.querySelector("#form-conatiner");
+  if (getFormValue() !== undefined) {
     taskArray.push(Task(...getFormValue()));
-    console.log('tassk array pushed',taskArray)
-  } 
+    console.log("tassk array pushed", taskArray);
+  }
 
   clearField();
   removeShowClass();
-  
-  formContainer.classList.remove('edit-form');
-  //shows added value on screen
+
+  formContainer.classList.remove("edit-form");
+  // shows added value on screen
   saveAndRender();
 });
 
-let updateButton = document.querySelector('.btn-main.update');
+const updateButton = document.querySelector(".btn-main.update");
 
-function updateTask(task){
-  
-  updateButton.addEventListener('click',(e) => {
-    e.preventDefault();
-    let taskField = document.querySelector('#task-field');
-    let projectField = document.querySelector('#project-field');
-    let contextField = document.querySelector('#context-field');
-    let priorityField = document.querySelector('#priority-field');
-    let dueDateField = document.querySelector('#due-date-field');
-    
-    task.taskItem = taskField.value;
-    task.projectName = projectField.value;
-    task.context  = contextField.value;
-    task.priority = priorityField.value;
-    task.dueDate = dueDateField.value ;
-    
-    removeShowClass();
+function updateTask(task) {
+  updateButton.addEventListener(
+    "click",
+    (e) => {
+      e.preventDefault();
+      const taskField = document.querySelector("#task-field");
+      const projectField = document.querySelector("#project-field");
+      const contextField = document.querySelector("#context-field");
+      const priorityField = document.querySelector("#priority-field");
+      const dueDateField = document.querySelector("#due-date-field");
 
-    taskArray.map(item => {
-      if(item.taskID != task.taskID){
-        item = task;
-      }
-    })
-    console.log(taskArray);
-   
-    saveAndRender();
-  },{once : true});
- 
+      task.taskItem = taskField.value;
+      task.projectName = projectField.value;
+      task.context = contextField.value;
+      task.priority = priorityField.value;
+      task.dueDate = dueDateField.value;
+
+      removeShowClass();
+
+      // eslint-disable-next-line array-callback-return
+      taskArray.map((item) => {
+        if (item.taskID !== task.taskID) {
+          item = task;
+        }
+      });
+      console.log(taskArray);
+
+      saveAndRender();
+    },
+    { once: true }
+  );
 }
 
-//display form button when clicked
+// display form button when clicked
 
-let fixedButton = document.querySelector(".fixed-button");
-let form = document.querySelector("form");
-let overlay = document.querySelector(".overlay");
+const fixedButton = document.querySelector(".fixed-button");
+const form = document.querySelector("form");
+const overlay = document.querySelector(".overlay");
 
-fixedButton.addEventListener("click", (e) => {
+fixedButton.addEventListener("click", () => {
   clearField();
   showForm();
 });
 
-function showForm(){
+function showForm() {
   form.classList.add("show");
   overlay.classList.add("show");
 }
 overlay.addEventListener("click", () => {
   removeShowClass();
 });
-
