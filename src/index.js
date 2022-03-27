@@ -7,13 +7,13 @@ import {
   isDate,
   parseISO,
   differenceInCalendarDays,
+  formatDistanceStrict,
 } from "date-fns";
 import createTaskCard from "./createTaskCard";
 import getFormValue from "./getFormValue";
 import removeShowClass from "./removeShowClass";
 import clearField from "./clearField";
 import getItem from "./getItems";
-import cs from "date-fns/esm/locale/cs/index.js";
 import { enIN, enUS } from "date-fns/locale";
 
 /* const getTaskItem = (data) => {
@@ -151,29 +151,42 @@ function renderTask() {
     taskItem.textContent = getItem(task).getTaskItem;
     context.textContent = getItem(task).getContext;
     priority.textContent = getItem(task).getPriority;
-    dueDate.textContent = getDueDate(getItem(task).getDueDate);
+    let inputDate = getItem(task).getDueDate
+    const {relativeDate} = getDueDate(inputDate);
+    dueDate.textContent = relativeDate;
 
     sectionTask.appendChild(taskContainer);
   });
 }
 
+
+//Change formatRelative to receive date without time
+const formatRelativeLocale = {
+  lastWeek: "'Last' eeee",
+  yesterday: "'Yesterday'",
+  today: "'Today'",
+  tomorrow: "'Tomorrow'",
+  nextWeek: "eeee",
+  other: "do MMMM yyyy",
+};
+
+const locale = {
+  ...enUS,
+  formatRelative: (token) => formatRelativeLocale[token],
+};
+
 /// show date function
 function getDueDate(dueDate) {
+  // if due date is not present return empty string
+  if(!dueDate){
+   return ''; 
+  }
+  
   const parsedDueDate = parseISO(dueDate);
-
-  //When diff is upto 7 days return this
-  console.log(formatRelative(parsedDueDate, Date.now()));
-  //When diff is more than 7 days return this
-  console.log(format(parsedDueDate, "do MMMM"));
+  const relativeDate = formatRelative(parsedDueDate, Date.now(), { locale });
+  
+  return {relativeDate,parsedDueDate};
 }
-/* import {
-  format,
-  formatRelative,
-  compareAsc,
-  isPast,
-  isDate,
-  parseISO,
-} from "date-fns"; */
 
 function saveAndRender() {
   saveTask();
