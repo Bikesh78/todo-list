@@ -4,7 +4,6 @@ import {
   formatRelative,
   compareAsc,
   isPast,
-  isDate,
   parseISO,
   differenceInCalendarDays,
   formatDistanceStrict,
@@ -25,8 +24,6 @@ const getTaskDetail = (data) =>{
     return {taskDetail};
 } */
 
-let counter = 0;
-
 const Task = (
   taskItem,
   taskDetail,
@@ -38,7 +35,7 @@ const Task = (
   /*     const data ={taskItem, taskDetail, context, priority, dueDate, projectName};
     return Object.assign({},getTaskItem(data),getTaskDetail(data)); */
   const isCompleted = false;
-  const taskID = counter++;
+  const taskID = Date.now();
   return {
     taskID,
     taskItem,
@@ -67,7 +64,6 @@ if (taskArray.length === 0) {
       "Loose 5kg of weight"
     )
   );
-
   taskArray.push(
     Task(
       "Do pushups",
@@ -78,6 +74,7 @@ if (taskArray.length === 0) {
       "Loose 5kg of weight"
     )
   );
+  taskArray[0].taskID = 1;
 }
 
 console.log(...taskArray);
@@ -86,7 +83,6 @@ const sectionTask = document.querySelector(".section-tasks");
 function saveTask() {
   localStorage.setItem("task", JSON.stringify(taskArray));
   taskArray = JSON.parse(localStorage.getItem("task"));
-  console.log(taskArray);
 }
 function clearElement(element) {
   while (element.firstChild) {
@@ -145,20 +141,25 @@ function renderTask() {
     deleteTask.textContent = "X";
 
     // keeps checkbox ticked even when task is re-rendered
-    task.isCompleted ? (checkbox.checked = true) : (checkbox.checked = false);
+    if (task.isCompleted) {
+      checkbox.checked = true;
+      taskContainer.classList.add("task-completed");
+    } else {
+      checkbox.checked = false;
+      taskContainer.classList.remove("task-completed");
+    }
 
     taskContainer.setAttribute("data-user-id", getItem(task).getTaskID);
     taskItem.textContent = getItem(task).getTaskItem;
     context.textContent = getItem(task).getContext;
     priority.textContent = getItem(task).getPriority;
-    let inputDate = getItem(task).getDueDate
-    const {relativeDate} = getDueDate(inputDate);
+    let inputDate = getItem(task).getDueDate;
+    const { relativeDate } = getDueDate(inputDate);
     dueDate.textContent = relativeDate;
 
     sectionTask.appendChild(taskContainer);
   });
 }
-
 
 //Change formatRelative to receive date without time
 const formatRelativeLocale = {
@@ -178,14 +179,14 @@ const locale = {
 /// show date function
 function getDueDate(dueDate) {
   // if due date is not present return empty string
-  if(!dueDate){
-   return ''; 
+  if (!dueDate) {
+    return "";
   }
-  
+
   const parsedDueDate = parseISO(dueDate);
   const relativeDate = formatRelative(parsedDueDate, Date.now(), { locale });
-  
-  return {relativeDate,parsedDueDate};
+
+  return { relativeDate, parsedDueDate };
 }
 
 function saveAndRender() {
@@ -211,7 +212,8 @@ sectionTask.addEventListener("click", (e) => {
     console.log("is completed", arrayId);
     taskArray.forEach((task) => {
       if (task.taskID == arrayId) {
-        if (e.target.checked == true) {
+        console.log(parentNode);
+        if (e.target.checked === true) {
           task.isCompleted = true;
         } else {
           task.isCompleted = false;
@@ -263,7 +265,7 @@ submitButton.addEventListener("click", (e) => {
   const formContainer = document.querySelector("#form-conatiner");
   if (getFormValue() !== undefined) {
     taskArray.push(Task(...getFormValue()));
-    console.log("tassk array pushed", taskArray);
+    console.log("task array pushed", taskArray);
   }
 
   clearField();
@@ -301,7 +303,6 @@ function updateTask(task) {
           item = task;
         }
       });
-      console.log(taskArray);
 
       saveAndRender();
     },

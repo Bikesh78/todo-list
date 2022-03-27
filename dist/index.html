@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
 </head>
+
 <body>
     <header>
         <div class="header-text">
@@ -15,31 +17,34 @@
     <main class="page-home">
         <section class="section-menu">
             <div class="menu-container">
-                <div class="menu inbox">
+                <div class="menu-header inbox">
                     <h3>Inbox</h3>
+                    <div class="menu all-tasks">
+                        <h3>All Tasks</h3>
+                    </div>
+                    <div class="menu today">
+                        <h3>Today</h3>
+                    </div>
+                    <div class="menu tomorrow">
+                        <h3>Tomorrow</h3>
+                    </div>
+                    <div class="menu this-week">
+                        <h3>This Week</h3>
+                    </div>
                 </div>
-                <div class="menu all-tasks">
-                    <h3>All Tasks</h3>
-                </div>
-                <div class="menu today">
-                    <h3>Today</h3>
-                </div>
-                <div class="menu tomorrow">
-                    <h3>Tomorrow</h3>
-                </div>
-                <div class="menu projects">
+                <div class="menu-header project">
                     <h3>Projects</h3>
                 </div>
-                <div class="menu priority">
+                <div class="menu-header priority">
                     <h3>Priority</h3>
                 </div>
-                <div class="menu delegated">
+                <div class="menu-header delegated">
                     <h3>Given to Others</h3>
                 </div>
-                <div class="menu someday">
+                <div class="menu-headersomeday">
                     <h3>Someday</h3>
                 </div>
-                <div class="menu context">
+                <div class="menu-header context">
                     <h3>Context</h3>
                 </div>
             </div>
@@ -110,4 +115,5 @@
     </main>
     <script src="bundle.js"></script>
 </body>
+
 </html>
