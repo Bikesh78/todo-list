@@ -15,9 +15,17 @@ export default function getFormValue() {
     let contextName = contextField.value;
     let priorityLevel = priorityField.value;
     let dueDate = dueDateField.value;
+    let taskDetail = null;
 
     // taskArray.push(Task.apply(null,[taskName, projectName, contextName, priorityLevel, dueDate]));
 
-    return [taskName, projectName, contextName, priorityLevel, dueDate];
+    return [
+      taskName,
+      taskDetail,
+      contextName,
+      priorityLevel,
+      dueDate,
+      projectName,
+    ];
   }
 }

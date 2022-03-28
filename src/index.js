@@ -91,7 +91,7 @@ function clearElement(element) {
   }
 }
 
-function renderTask() {
+function renderTask(taskArray) {
   let projectArray = [];
   clearElement(sectionTask);
 
@@ -197,13 +197,14 @@ function getDueDate(dueDate) {
   return { relativeDate, parsedDueDate };
 }
 
-function saveAndRender() {
+function saveAndRender(taskArray) {
   saveTask();
-  renderTask();
+  renderTask(taskArray);
 }
-saveAndRender();
+saveAndRender(taskArray);
 
 function renderProject(projectArray) {
+  clearElement(projectHeader);
   // remove duplicate elements from array
   let uniqueProjectArray = [];
   projectArray.forEach((item) => {
@@ -214,7 +215,7 @@ function renderProject(projectArray) {
 
   // render each unique array
   uniqueProjectArray.forEach((project) => {
-    console.log("unique Project", uniqueProjectArray);
+    // console.log("unique Project", uniqueProjectArray);
     const projectContainer = document.createElement("div");
     projectContainer.setAttribute("class", "menu project-name");
     const projectName = document.createElement("h3");
@@ -234,7 +235,7 @@ sectionTask.addEventListener("click", (e) => {
     const deleteId = parseInt(selectedTarget.parentNode.dataset.userId, 10);
 
     taskArray = taskArray.filter((task) => task.taskID != deleteId);
-    saveAndRender();
+    saveAndRender(taskArray);
   }
 
   // is completed function
@@ -249,7 +250,7 @@ sectionTask.addEventListener("click", (e) => {
         }
       }
     });
-    saveAndRender();
+    saveAndRender(taskArray);
   }
 
   // Edit task
@@ -301,7 +302,7 @@ submitButton.addEventListener("click", (e) => {
 
   formContainer.classList.remove("edit-form");
   // shows added value on screen
-  saveAndRender();
+  saveAndRender(taskArray);
 });
 
 const updateButton = document.querySelector(".btn-main.update");
@@ -332,7 +333,7 @@ function updateTask(task) {
         }
       });
 
-      saveAndRender();
+      saveAndRender(taskArray);
     },
     { once: true }
   );
