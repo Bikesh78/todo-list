@@ -1,31 +1,18 @@
 import "./style.css";
 import {
-  format,
   formatRelative,
   compareAsc,
-  isPast,
   parseISO,
-  differenceInCalendarDays,
-  formatDistanceStrict,
   isToday,
   isTomorrow,
 } from "date-fns";
-import createTaskCard from "./createTaskCard";
+
 import getFormValue from "./getFormValue";
 import removeShowClass from "./removeShowClass";
 import clearField from "./clearField";
 import getItem from "./getItems";
 import { enIN, enUS } from "date-fns/locale";
 import { isThisWeek } from "date-fns/esm";
-
-/* const getTaskItem = (data) => {
-    let taskItem = data.taskItem;
-    return {taskItem};
-}
-const getTaskDetail = (data) =>{
-    let taskDetail = data.taskDetail;
-    return {taskDetail};
-} */
 
 const Task = (
   taskItem,
@@ -35,8 +22,6 @@ const Task = (
   dueDate,
   projectName
 ) => {
-  /*     const data ={taskItem, taskDetail, context, priority, dueDate, projectName};
-    return Object.assign({},getTaskItem(data),getTaskDetail(data)); */
   const isCompleted = false;
   const taskID = Date.now();
   return {
@@ -50,7 +35,6 @@ const Task = (
     isCompleted,
   };
 };
-// task1.isCompleted = true;
 
 // gets tasArray from local storage. Sets it to an empty array if there is no item in local storage
 let taskArray = JSON.parse(localStorage.getItem("task")) || [];
@@ -80,7 +64,6 @@ if (taskArray.length === 0) {
   taskArray[0].taskID = 1;
 }
 
-console.log(...taskArray);
 const sectionTask = document.querySelector(".section-tasks");
 const projectHeader = document.querySelector(".menu-header.project");
 const contextHeader = document.querySelector(".menu-header.context");
@@ -93,6 +76,10 @@ function clearElement(element) {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
+}
+function getIncompleteTask() {
+  let incompleteTask = taskArray.filter((task) => !task.isCompleted);
+  return incompleteTask;
 }
 
 function renderTask(taskArray) {
@@ -183,7 +170,7 @@ const locale = {
 
 /// show date function
 function getDueDate(dueDate) {
-  // if due date is not present return empty string
+  // if due date is not present, return empty string
   if (!dueDate) {
     return "";
   }
@@ -198,7 +185,7 @@ function saveAndRender(taskArray) {
   saveTask();
   renderTask(taskArray);
 }
-saveAndRender(taskArray);
+saveAndRender(getIncompleteTask());
 renderProject();
 renderContext();
 
@@ -223,7 +210,6 @@ function renderProject() {
   projectHeader.appendChild(menuProjectHeader);
   // render each unique array
   uniqueProjectArray.forEach((project) => {
-    // console.log("unique Project", uniqueProjectArray);
     const projectContainer = document.createElement("div");
     projectContainer.setAttribute("class", "menu project-name");
     const projectName = document.createElement("h3");
@@ -255,7 +241,6 @@ function renderContext() {
   contextHeader.appendChild(menuContextHeader);
   // render each unique array
   uniqueContextArray.forEach((context) => {
-    // console.log("unique Project", uniqueProjectArray);
     const contextContainer = document.createElement("div");
     contextContainer.setAttribute("class", "menu context-name");
     const contextName = document.createElement("h3");
@@ -280,6 +265,7 @@ sectionTask.addEventListener("click", (e) => {
   // is completed function
   if (e.target.type === "checkbox") {
     const arrayId = getTaskId(e.target);
+
     taskArray.forEach((task) => {
       if (task.taskID == arrayId) {
         if (e.target.checked === true) {
@@ -289,6 +275,7 @@ sectionTask.addEventListener("click", (e) => {
         }
       }
     });
+
     saveAndRender(taskArray);
   }
 
@@ -333,7 +320,7 @@ submitButton.addEventListener("click", (e) => {
   const formContainer = document.querySelector("#form-conatiner");
   if (getFormValue() !== undefined) {
     taskArray.push(Task(...getFormValue()));
-    console.log("task array pushed", taskArray);
+    // console.log("task array pushed", taskArray);
   }
 
   clearField();
@@ -430,7 +417,6 @@ inbox.addEventListener("click", (e) => {
     saveAndRender(taskArray);
   }
   if (parentNode.classList.contains("today")) {
-    console.log("Today");
     let todayTask = taskArray.filter((task) => {
       if (isToday(parseISO(task.dueDate))) {
         return task;
@@ -439,7 +425,6 @@ inbox.addEventListener("click", (e) => {
     saveAndRender(todayTask);
   }
   if (parentNode.classList.contains("tomorrow")) {
-    console.log("Tomorrow");
     let tomorrowTask = taskArray.filter((task) => {
       if (isTomorrow(parseISO(task.dueDate))) {
         return task;
@@ -448,7 +433,6 @@ inbox.addEventListener("click", (e) => {
     saveAndRender(tomorrowTask);
   }
   if (parentNode.classList.contains("this-week")) {
-    console.log("This Week");
     let weekTask = taskArray.filter((task) => {
       if (isThisWeek(parseISO(task.dueDate))) {
         return task;
@@ -456,4 +440,22 @@ inbox.addEventListener("click", (e) => {
     });
     saveAndRender(weekTask);
   }
+});
+
+function showCompletedTask() {
+  let completedTask = taskArray.filter((task) => task.isCompleted);
+  saveAndRender(completedTask);
+}
+const completeHeader = document.querySelector(".sub-menu.complete");
+completeHeader.addEventListener("click", (e) => {
+  showCompletedTask();
+});
+
+function showIncompleteTask() {
+  let incompletedTask = taskArray.filter((task) => !task.isCompleted);
+  saveAndRender(incompletedTask);
+}
+const incompleteHeader = document.querySelector(".sub-menu.incomplete");
+incompleteHeader.addEventListener("click", (e) => {
+  showIncompleteTask();
 });

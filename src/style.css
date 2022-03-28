@@ -176,3 +176,11 @@ select {
 .menu {
   cursor: pointer;
 }
+.sub-menu-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+.sub-menu {
+  cursor: pointer;
+}
