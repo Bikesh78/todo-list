@@ -173,3 +173,6 @@ select {
   display: block;
   border-bottom: solid 1px grey;
 }
+.menu {
+  cursor: pointer;
+}

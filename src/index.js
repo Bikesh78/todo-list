@@ -79,6 +79,7 @@ if (taskArray.length === 0) {
 
 console.log(...taskArray);
 const sectionTask = document.querySelector(".section-tasks");
+const projectHeader = document.querySelector(".menu-header.project");
 
 function saveTask() {
   localStorage.setItem("task", JSON.stringify(taskArray));
@@ -91,6 +92,7 @@ function clearElement(element) {
 }
 
 function renderTask() {
+  let projectArray = [];
   clearElement(sectionTask);
 
   taskArray.forEach((task) => {
@@ -157,8 +159,14 @@ function renderTask() {
     const { relativeDate } = getDueDate(inputDate);
     dueDate.textContent = relativeDate;
 
+    let projectName = getItem(task).getProjectName;
+    if (projectName) {
+      projectArray.push(projectName);
+    }
+
     sectionTask.appendChild(taskContainer);
   });
+  renderProject(projectArray);
 }
 
 //Change formatRelative to receive date without time
@@ -195,6 +203,29 @@ function saveAndRender() {
 }
 saveAndRender();
 
+function renderProject(projectArray) {
+  // remove duplicate elements from array
+  let uniqueProjectArray = [];
+  projectArray.forEach((item) => {
+    if (!uniqueProjectArray.includes(item)) {
+      uniqueProjectArray.push(item);
+    }
+  });
+
+  // render each unique array
+  uniqueProjectArray.forEach((project) => {
+    console.log("unique Project", uniqueProjectArray);
+    const projectContainer = document.createElement("div");
+    projectContainer.setAttribute("class", "menu project-name");
+    const projectName = document.createElement("h3");
+    projectName.textContent = project;
+    projectContainer.appendChild(projectName);
+
+    projectHeader.appendChild(projectContainer);
+  });
+}
+// renderProject(taskArray);
+
 sectionTask.addEventListener("click", (e) => {
   // delete tasks
   const selectedTarget = e.target.parentNode;
@@ -209,10 +240,8 @@ sectionTask.addEventListener("click", (e) => {
   // is completed function
   if (e.target.type === "checkbox") {
     const arrayId = getTaskId(e.target);
-    console.log("is completed", arrayId);
     taskArray.forEach((task) => {
       if (task.taskID == arrayId) {
-        console.log(parentNode);
         if (e.target.checked === true) {
           task.isCompleted = true;
         } else {
@@ -233,7 +262,6 @@ sectionTask.addEventListener("click", (e) => {
         updateTask(task);
       }
     });
-    // renderTask();
   }
 });
 function showTaskValue(task) {
