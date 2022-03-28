@@ -7,6 +7,8 @@ import {
   parseISO,
   differenceInCalendarDays,
   formatDistanceStrict,
+  isToday,
+  isTomorrow,
 } from "date-fns";
 import createTaskCard from "./createTaskCard";
 import getFormValue from "./getFormValue";
@@ -14,6 +16,7 @@ import removeShowClass from "./removeShowClass";
 import clearField from "./clearField";
 import getItem from "./getItems";
 import { enIN, enUS } from "date-fns/locale";
+import { isThisWeek } from "date-fns/esm";
 
 /* const getTaskItem = (data) => {
     let taskItem = data.taskItem;
@@ -80,6 +83,7 @@ if (taskArray.length === 0) {
 console.log(...taskArray);
 const sectionTask = document.querySelector(".section-tasks");
 const projectHeader = document.querySelector(".menu-header.project");
+const contextHeader = document.querySelector(".menu-header.context");
 
 function saveTask() {
   localStorage.setItem("task", JSON.stringify(taskArray));
@@ -196,6 +200,7 @@ function saveAndRender(taskArray) {
 }
 saveAndRender(taskArray);
 renderProject();
+renderContext();
 
 function renderProject() {
   clearElement(projectHeader);
@@ -206,7 +211,6 @@ function renderProject() {
       projectArray.push(projectName);
     }
   });
-  console.log(projectArray);
   // remove duplicate elements from array
   let uniqueProjectArray = [];
   projectArray.forEach((item) => {
@@ -229,7 +233,38 @@ function renderProject() {
     projectHeader.appendChild(projectContainer);
   });
 }
-// renderProject(taskArray);
+
+function renderContext() {
+  clearElement(contextHeader);
+  let contextArray = [];
+  taskArray.forEach((task) => {
+    let contextName = getItem(task).getContext;
+    if (contextName) {
+      contextArray.push(contextName);
+    }
+  });
+  // remove duplicate elements from array
+  let uniqueContextArray = [];
+  contextArray.forEach((item) => {
+    if (!uniqueContextArray.includes(item)) {
+      uniqueContextArray.push(item);
+    }
+  });
+  const menuContextHeader = document.createElement("h3");
+  menuContextHeader.textContent = "Context";
+  contextHeader.appendChild(menuContextHeader);
+  // render each unique array
+  uniqueContextArray.forEach((context) => {
+    // console.log("unique Project", uniqueProjectArray);
+    const contextContainer = document.createElement("div");
+    contextContainer.setAttribute("class", "menu context-name");
+    const contextName = document.createElement("h3");
+    contextName.textContent = context;
+    contextContainer.appendChild(contextName);
+
+    contextHeader.appendChild(contextContainer);
+  });
+}
 
 sectionTask.addEventListener("click", (e) => {
   // delete tasks
@@ -308,6 +343,7 @@ submitButton.addEventListener("click", (e) => {
   // shows added value on screen
   saveAndRender(taskArray);
   renderProject();
+  renderContext();
 });
 
 const updateButton = document.querySelector(".btn-main.update");
@@ -340,6 +376,7 @@ function updateTask(task) {
 
       saveAndRender(taskArray);
       renderProject();
+      renderContext();
     },
     { once: true }
   );
@@ -364,7 +401,7 @@ overlay.addEventListener("click", () => {
   removeShowClass();
 });
 
-// display project
+// filter by project name
 projectHeader.addEventListener("click", (e) => {
   if (e.target.parentNode.classList.contains("project-name")) {
     let projectName = e.target.textContent;
@@ -376,11 +413,47 @@ projectHeader.addEventListener("click", (e) => {
   }
 });
 
+//filter by context
+contextHeader.addEventListener("click", (e) => {
+  if (e.target.parentNode.classList.contains("context-name")) {
+    let contextName = e.target.textContent;
+    let filteredContext = [];
+    filteredContext = taskArray.filter((task) => task.context === contextName);
+    saveAndRender(filteredContext);
+  }
+});
+
 const inbox = document.querySelector(".menu-header.inbox");
 inbox.addEventListener("click", (e) => {
   let parentNode = e.target.parentNode;
-  console.log(parentNode);
   if (parentNode.classList.contains("all-tasks")) {
     saveAndRender(taskArray);
+  }
+  if (parentNode.classList.contains("today")) {
+    console.log("Today");
+    let todayTask = taskArray.filter((task) => {
+      if (isToday(parseISO(task.dueDate))) {
+        return task;
+      }
+    });
+    saveAndRender(todayTask);
+  }
+  if (parentNode.classList.contains("tomorrow")) {
+    console.log("Tomorrow");
+    let tomorrowTask = taskArray.filter((task) => {
+      if (isTomorrow(parseISO(task.dueDate))) {
+        return task;
+      }
+    });
+    saveAndRender(tomorrowTask);
+  }
+  if (parentNode.classList.contains("this-week")) {
+    console.log("This Week");
+    let weekTask = taskArray.filter((task) => {
+      if (isThisWeek(parseISO(task.dueDate))) {
+        return task;
+      }
+    });
+    saveAndRender(weekTask);
   }
 });
