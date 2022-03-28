@@ -92,7 +92,6 @@ function clearElement(element) {
 }
 
 function renderTask(taskArray) {
-  let projectArray = [];
   clearElement(sectionTask);
 
   taskArray.forEach((task) => {
@@ -159,14 +158,8 @@ function renderTask(taskArray) {
     const { relativeDate } = getDueDate(inputDate);
     dueDate.textContent = relativeDate;
 
-    let projectName = getItem(task).getProjectName;
-    if (projectName) {
-      projectArray.push(projectName);
-    }
-
     sectionTask.appendChild(taskContainer);
   });
-  renderProject(projectArray);
 }
 
 //Change formatRelative to receive date without time
@@ -176,7 +169,7 @@ const formatRelativeLocale = {
   today: "'Today'",
   tomorrow: "'Tomorrow'",
   nextWeek: "eeee",
-  other: "do MMMM yyyy",
+  other: "do MMMM, yyyy",
 };
 
 const locale = {
@@ -202,9 +195,18 @@ function saveAndRender(taskArray) {
   renderTask(taskArray);
 }
 saveAndRender(taskArray);
+renderProject();
 
-function renderProject(projectArray) {
+function renderProject() {
   clearElement(projectHeader);
+  let projectArray = [];
+  taskArray.forEach((task) => {
+    let projectName = getItem(task).getProjectName;
+    if (projectName) {
+      projectArray.push(projectName);
+    }
+  });
+  console.log(projectArray);
   // remove duplicate elements from array
   let uniqueProjectArray = [];
   projectArray.forEach((item) => {
@@ -212,7 +214,9 @@ function renderProject(projectArray) {
       uniqueProjectArray.push(item);
     }
   });
-
+  const menuProjectHeader = document.createElement("h3");
+  menuProjectHeader.textContent = "Project";
+  projectHeader.appendChild(menuProjectHeader);
   // render each unique array
   uniqueProjectArray.forEach((project) => {
     // console.log("unique Project", uniqueProjectArray);
@@ -303,6 +307,7 @@ submitButton.addEventListener("click", (e) => {
   formContainer.classList.remove("edit-form");
   // shows added value on screen
   saveAndRender(taskArray);
+  renderProject();
 });
 
 const updateButton = document.querySelector(".btn-main.update");
@@ -334,6 +339,7 @@ function updateTask(task) {
       });
 
       saveAndRender(taskArray);
+      renderProject();
     },
     { once: true }
   );
@@ -356,4 +362,25 @@ function showForm() {
 }
 overlay.addEventListener("click", () => {
   removeShowClass();
+});
+
+// display project
+projectHeader.addEventListener("click", (e) => {
+  if (e.target.parentNode.classList.contains("project-name")) {
+    let projectName = e.target.textContent;
+    let filteredProject = [];
+    filteredProject = taskArray.filter(
+      (task) => task.projectName === projectName
+    );
+    saveAndRender(filteredProject);
+  }
+});
+
+const inbox = document.querySelector(".menu-header.inbox");
+inbox.addEventListener("click", (e) => {
+  let parentNode = e.target.parentNode;
+  console.log(parentNode);
+  if (parentNode.classList.contains("all-tasks")) {
+    saveAndRender(taskArray);
+  }
 });
