@@ -1,31 +1,30 @@
-//returns the form input value as an array
+// returns the form input value as an array
 export default function getFormValue() {
-  let formContainer = document.querySelector("#form-conatiner");
-  let taskField = document.querySelector("#task-field");
-  let projectField = document.querySelector("#project-field");
-  let contextField = document.querySelector("#context-field");
-  let priorityField = document.querySelector("#priority-field");
-  let dueDateField = document.querySelector("#due-date-field");
+  const formContainer = document.querySelector('#form-conatiner');
+  const taskField = document.querySelector('#task-field');
+  const projectField = document.querySelector('#project-field');
+  const contextField = document.querySelector('#context-field');
+  const priorityField = document.querySelector('#priority-field');
+  const dueDateField = document.querySelector('#due-date-field');
 
-  if (formContainer.classList.contains("edit-form")) {
-    return;
-  } else {
-    let taskName = taskField.value;
-    let projectName = projectField.value;
-    let contextName = contextField.value;
-    let priorityLevel = priorityField.value;
-    let dueDate = dueDateField.value;
-    let taskDetail = null;
-
-    // taskArray.push(Task.apply(null,[taskName, projectName, contextName, priorityLevel, dueDate]));
-
-    return [
-      taskName,
-      taskDetail,
-      contextName,
-      priorityLevel,
-      dueDate,
-      projectName,
-    ];
+  if (formContainer.classList.contains('edit-form')) {
+    return undefined;
   }
+  const taskName = taskField.value;
+  const projectName = projectField.value;
+  const contextName = contextField.value;
+  const priorityLevel = priorityField.value;
+  const dueDate = dueDateField.value;
+  const taskDetail = null;
+
+  // taskArray.push(Task.apply(null,[taskName, projectName, contextName, priorityLevel, dueDate]));
+
+  return [
+    taskName,
+    taskDetail,
+    contextName,
+    priorityLevel,
+    dueDate,
+    projectName,
+  ];
 }
